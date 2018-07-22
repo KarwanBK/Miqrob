@@ -54,7 +54,7 @@ print substr($0,RSTART+length(w1),RLENGTH-length(w1 w2))}')
 
 function clean () {
 echo -n "Cleaning .. "
-rm -rf tempappinfo /var/root/hacks/fils.tmp /var/root/.bash_history
+rm -rf tempappinfo /var/root/.bash_history
 echo " Done"
 echo ""
 exit 0;
