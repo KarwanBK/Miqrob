@@ -5,7 +5,7 @@ Turn your iOS SaveGame into a DEB
 
 1- go to Cydia and add this repo
 
-http://repo.kurdios.com
+      http://repo.kurdios.com
 
 2- install "Kurd Patcher"
 
