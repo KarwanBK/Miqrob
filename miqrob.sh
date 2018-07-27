@@ -1,7 +1,14 @@
 #!/bin/sh
 # MIQROB 1.0 22/7/2018
 # Karwan BK (karwanbk@yahoo.com)
-# REQUIRED (wget, plutil, kurd-patcher) (repo.kurdios.com)
+# REQUIRED (wget, plutil)
+
+
+if [ ! -f "/var/root/hacks" ]; then
+mkdir -p /var/root/hacks
+mkdir -p /var/root/hacks/debs
+mkdir -p /var/root/hacks/hack
+fi
 
 function usage () {
 echo ""
@@ -24,46 +31,57 @@ sleep .1
 	echo ""
 }
 function itunes () {
+            online="yes"
 			first='http://ax.phobos.apple.com.edgesuite.net/WebObjects/MZStoreServices.woa/wa/wsLookup?id='
 			output=$(curl -H -d -s "$first""$appid")
 			code=$(echo "$output" | tr '{', '\n' | sed -n "2p" | sed -e 's/:/ /' | awk '{print $2}')
 			string=$(echo "$output" | tr '{', '\n' | sed -e '/"signature":\(.*\)/d;/"data":\(.*\)/d;/"signature":\(.*\)/d;/"code":\(.*\)/d' |sed -e 's/\\"//g;s/\\\\\\\//\//g;s/\\//g' | tr '}', '\n' | sed -e 's/"//' | sed '/^$/d')
-			echo "$string">tempappinfo
+			echo "$string">/var/root/hacks/tempappinfo
 			
 			#get the bundleid
-			bi=$(sed -n '/bundleId":"/p' tempappinfo)
+			bi=$(sed -n '/bundleId":"/p' /var/root/hacks/tempappinfo)
 			BundleID=$(echo $bi | awk -v w1="bundleId\":\"" -v w2="\"" 'match($0, w1 ".*" w2){
 			print substr($0,RSTART+length(w1),RLENGTH-length(w1 w2))}')
 			
 			#get the app version
-			Work_Version=$(sed -n '/version":"/p' tempappinfo)
+			Work_Version=$(sed -n '/version":"/p' /var/root/hacks/tempappinfo)
 			Work_Version=$(echo $Work_Version | awk -v w1="version\":\"" -v w2="\"" 'match($0, w1 ".*" w2){
 print substr($0,RSTART+length(w1),RLENGTH-length(w1 w2))}')
 			
 			#get the app name
-			appname=$(sed -n '/trackCensoredName":"/p' tempappinfo)
+			appname=$(sed -n '/trackCensoredName":"/p' /var/root/hacks/tempappinfo)
 			appname=$(echo $appname | awk -v w1="trackCensoredName\":\"" -v w2="\"" 'match($0, w1 ".*" w2){
 			print substr($0,RSTART+length(w1),RLENGTH-length(w1 w2))}')
 			Name=$(printf "$appname")
 			
 			#image
-			image=$(sed -n '/artworkUrl100":"/p' tempappinfo)
+			image=$(sed -n '/artworkUrl100":"/p' /var/root/hacks/tempappinfo)
 			image=$(echo $image | awk -v w1="artworkUrl100\":\"" -v w2="\"" 'match($0, w1 ".*" w2){
 print substr($0,RSTART+length(w1),RLENGTH-length(w1 w2))}')
 }
 
 function clean () {
 echo -n "Cleaning .. "
-rm -rf tempappinfo /var/root/.bash_history
+rm -rf /var/root/hacks/tempappinfo
 echo " Done"
 echo ""
 exit 0;
 }
 
+
+ # info file
+ 
 function info () {
 now=`date`
+cd "/var/root/hacks/"
+mkdir -p "$pName"
+mkdir -p "$pName"/DEBIAN
+mkdir -p "$pName"/var/mobile/Library/kurd-patcher
+
+cd "$pName"/var/mobile/Library/kurd-patcher/ && wget $image &>/dev/null && mv "100x100bb.jpg" $pName.png &>/dev/null
+
 echo -n "Making info File .." && sleep 1
-file="/$pName.plist"
+file="$pName.plist"
 if [ ! -f "$file" ]; then
 plutil -create "$file" 2>&1> /dev/null
 plutil -key "BundleID" -string $BundleID "$file" 2>&1> /dev/null
@@ -79,23 +97,25 @@ fi
 echo " Done !"
 }
 
+  # where does your hack go
+  
 function where () {
 echo ""
 echo "-----------------------------"
 echo "- Where Dose Your Hack Go ? .HackType"
 echo ""
-echo "1> Documents .D"
-echo "2> Library .L"
-echo "3> Library/Preferences .LP"
-echo "4> .APP folder .A"        
-echo "5> Documents & Library Together .D/L"
+echo "1> Documents"
+echo "2> Library"
+echo "3> Library/Preferences"
+echo "4> .APP folder"        
+echo "5> Documents & Library Together"
 echo ""
 
 if [ -f /var/root/hacks/hack/*.plist ]; then
 Type="LP"
 echo "- Enter Hack Type $Type"
 else
-read -p "- HackType " "Type";
+read -p "- HackType (1,2,3,4,5) " "Type";
 fi
 
 if [ -z "$BundleID" ]; then
@@ -103,9 +123,10 @@ read -p "- Enter Bundle ID of the App. " "BundleID";
 read -p "- APP Name. " "Name";
 read -p "- Work Version (ALL). " "Work_Version";
 else
+echo ""
 echo "- Bundle ID of the App. $BundleID";
 echo "- APP Name. $Name";
-echo "- Work Version . $Work_Version";
+echo "- Work Version. $Work_Version";
 fi
 read -p "- Com.Kurdios." "pName";
 read -p "- No Backup Mode (Y) for large files it won't backup user data. " "No_Backup";
@@ -139,16 +160,9 @@ Type="D/L"
 fi
 }
 
+  # zip file and deb file
+  
 function file_deb () {
-cd "/var/root/hacks/"
-mkdir -p "$pName"
-mkdir -p "$pName"/DEBIAN
-
-mkdir -p "$pName"/var/mobile/Library/kurd-patcher
-cd "$pName"/var/mobile/Library/kurd-patcher/ && wget $image &>/dev/null && mv "100x100bb.jpg" $pName.png && cd - &>/dev/null
-mv $file "$pName"/var/mobile/Library/kurd-patcher/$file
-	sleep 1
-	
 	if [ ! -f "/var/root/hacks/hack/$pName.zip" ]; then
 	echo -n "Making Hack zip .."
 	    if [ ! "$(ls -A "/var/root/hacks/hack/")" ]; then
@@ -156,12 +170,12 @@ mv $file "$pName"/var/mobile/Library/kurd-patcher/$file
 	    echo " No hack file's found in /var/root/hacks/hack/" && rm -rf "$pName" && clean
 	    fi
 		if [ ! -f "/var/root/hacks/hack/$pName" ]; then
-		zip_file="/var/root/hacks/hack/$pName"
-		else
 		zip_file="/var/root/hacks/hack/"
+		else
+		zip_file="/var/root/hacks/hack/$pName"
 		fi
-	app=`cd "$zip_file" && find -type f -print0 | xargs -0 ls -t`
-    zip "/var/root/hacks/$pName/$pName.zip" $app &> /dev/null
+    cd "$zip_file" && zip "$pName.zip" `find -type f -print0 | xargs -0 ls -t` 2>&1> /dev/null
+	mv "$pName.zip" "/var/root/hacks/$pName/$pName.zip"
     echo " Done !"
 	else
 	echo -n "We found zip file.."
@@ -240,21 +254,15 @@ fi
 echo ""
 echo "Welcome to Miqrob SaveGame DEB builder !"
 sleep .1
-echo "By : Karwan BK (karwanbk@yahoo.com)"
+echo " #By : Karwan BK (karwanbk@yahoo.com)"
 echo ""
-echo "miqrob -help
-for showing help"
+echo " ## miqrob -help
+    for showing help"
 sleep .1
 echo ""
 echo "#################################"
 echo "Put your hack files to /var/root/hacks/hack"
 echo "#################################"
-
-if [ ! -f "/var/root/hacks" ]; then
-mkdir -p /var/root/hacks
-mkdir -p /var/root/hacks/debs
-mkdir -p /var/root/hacks/hack
-fi
 
 echo ""
 echo "-----------------------------"
@@ -262,15 +270,20 @@ echo "- Wanna hack something ?"
 echo ""
 echo "1> APP installed"
 echo "2> APP NOT installed"
-read -p "- Enter Option Number 1/2 " "have";
+echo ""
+read -p "- Enter Option Number (1/2) " "have";
 echo "-----------------------------"
 	echo ""
 if [ "$have" == "1" ];then
-    kurd-patcher applist
-	echo ""
-	doc=$(cat "/var/mobile/temp.temp" 2>/dev/null)
-	app=$(cat "/var/mobile/tempapp.temp" 2>/dev/null)
-	BundleID=$(plutil -key CFBundleIdentifier $app/Info.plist)
+        if [ "$online" == "yes" ];then
+		kurd-patcher $BundleID
+		doc=$(cat "/var/mobile/temp.temp" 2>/dev/null)
+	    app=$(cat "/var/mobile/tempapp.temp" 2>/dev/null)
+		else
+        kurd-patcher applist
+	    doc=$(cat "/var/mobile/temp.temp" 2>/dev/null)
+	    app=$(cat "/var/mobile/tempapp.temp" 2>/dev/null)
+	    BundleID=$(plutil -key CFBundleIdentifier $app/Info.plist)
     if grep -q "CFBundleShortVersionString" "$app/Info.plist"
     then Work_Version=$(plutil -key CFBundleShortVersionString "$app/Info.plist")
     else Work_Version=$(plutil -key CFBundleVersion "$app/Info.plist")
@@ -280,6 +293,8 @@ if [ "$have" == "1" ];then
     then Name=$(plutil -key CFBundleDisplayName "$app/Info.plist")
     else Name=$(plutil -key CFBundleName "$app/Info.plist")
     fi
+		fi
+	echo ""
 	where
 	    if [ "$Type" == "D" ];then
 		loc="$doc/Documents"
@@ -295,9 +310,10 @@ if [ "$have" == "1" ];then
 		fi
 	    if [ "$Type" == "A" ];then
         echo "not supporting!"
+		exit 0;
 		fi
 		echo ""
-		read -p "- You want your app files as hack files ? y=yes " "have";
+		read -p "- You want your app files as hack files ? (y=yes) " "have";
 		if [ "$have" == "y" ];then
 		echo -n "- Putting your files into hack folder "
 		rm -rf "/var/root/hacks/hack/*"
@@ -316,4 +332,3 @@ else
 	echo "" && clean
 	fi
 fi
-
