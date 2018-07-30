@@ -7,7 +7,7 @@ Turn your iOS SaveGame into a DEB
 
       http://repo.kurdios.com
 
-2- install "Kurd Patcher"
+2- install "Kurd Patcher" and "curl"
 
 3- run this Script "Miqrob"
 
