@@ -1,7 +1,7 @@
 #!/bin/sh
 # MIQROB 1.0 22/7/2018
 # Karwan BK (karwanbk@yahoo.com)
-# REQUIRED (wget, plutil)
+# REQUIRED (wget, plutil, curl)
 
 
 if [ ! -f "/var/root/hacks" ]; then
@@ -308,17 +308,18 @@ if [ "$have" == "1" ];then
 	    if [ "$Type" == "D/L" ];then
         loc="$doc"
 		fi
-	    if [ "$Type" == "A" ];then
-        echo "not supporting!"
-		exit 0;
-		fi
 		echo ""
 		read -p "- You want your app files as hack files ? (y=yes) " "have";
 		if [ "$have" == "y" ];then
+	        if [ "$Type" == "A" ];then
+            echo "not supporting yet!"
+		    else
 		echo -n "- Putting your files into hack folder "
 		rm -rf "/var/root/hacks/hack/*"
 		cp -rf "$loc"/* "/var/root/hacks/hack/"
 		echo "Done !"
+		    fi
+
 		fi
 	echo ""
 	info
