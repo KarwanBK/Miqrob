@@ -205,9 +205,15 @@ Maintainer: KurdiOS Team <repo@kurdios.com>
 Icon: file:///var/mobile/Library/kurd-patcher/$pName.png" >"/var/root/hacks/$pName/DEBIAN/control"
 echo " Done !"
 
+echo -n "Making Prinst File .." && sleep 1
+echo "#!/bin/sh
+kurd-patcher \"-p\" \"$BundleID\" \"$Name\"
+" >"/var/root/hacks/$pName/DEBIAN/preinst"
+echo " Done !"
+
 echo -n "Making Postinst File .." && sleep 1
 echo "#!/bin/sh
-kurd-patcher \"$pName\" \"i\"
+kurd-patcher \"$pName\" \"i\" \"-p\"
 " >"/var/root/hacks/$pName/DEBIAN/postinst"
 echo " Done !"
 
@@ -219,6 +225,7 @@ echo " Done !"
 
 echo -n "Changing Chmod .." && sleep 1
 cd "/var/root/hacks/$pName/DEBIAN"
+chmod 775 preinst 2>&1> /dev/null
 chmod 775 prerm 2>&1> /dev/null
 chmod 775 postinst 2>&1> /dev/null
 chmod 775 control 2>&1> /dev/null
