@@ -205,12 +205,6 @@ Maintainer: KurdiOS Team <repo@kurdios.com>
 Icon: file:///var/mobile/Library/kurd-patcher/$pName.png" >"/var/root/hacks/$pName/DEBIAN/control"
 echo " Done !"
 
-echo -n "Making Prinst File .." && sleep 1
-echo "#!/bin/sh
-kurd-patcher \"-p\" \"$BundleID\" \"$Name\"
-" >"/var/root/hacks/$pName/DEBIAN/preinst"
-echo " Done !"
-
 echo -n "Making Postinst File .." && sleep 1
 echo "#!/bin/sh
 kurd-patcher \"$pName\" \"i\" \"-p\"
@@ -225,7 +219,6 @@ echo " Done !"
 
 echo -n "Changing Chmod .." && sleep 1
 cd "/var/root/hacks/$pName/DEBIAN"
-chmod 775 preinst 2>&1> /dev/null
 chmod 775 prerm 2>&1> /dev/null
 chmod 775 postinst 2>&1> /dev/null
 chmod 775 control 2>&1> /dev/null
@@ -234,7 +227,7 @@ echo ""
 read -p "- Last Step before making deb file check your hack .. " "enter";
 echo ""
 echo -n "Making deb file .."
-dpkg -b "/var/root/hacks/$pName" "/var/root/hacks/debs" &>/dev/null
+dpkg-deb -b -Zlzma "/var/root/hacks/$pName" "/var/root/hacks/debs" &>/dev/null
 if [ -f /var/root/hacks/debs/com.kurdios.$pName*_*$Work_Version*_iphoneos-arm.deb ]; then
 echo "DONE!"
 else 
