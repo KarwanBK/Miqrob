@@ -78,8 +78,9 @@ mkdir -p "$pName"
 mkdir -p "$pName"/DEBIAN
 mkdir -p "$pName"/var/mobile/Library/kurd-patcher
 
+if [ "$online" == "online" ]; then
 cd "$pName/var/mobile/Library/kurd-patcher/" && wget "$image" --no-check-certificate &>/dev/null && mv "100x100bb.jpg" $pName.png
-
+fi
 echo -n "Making info File .." && sleep 1
 file="$pName.plist"
 if [ ! -f "$file" ]; then
