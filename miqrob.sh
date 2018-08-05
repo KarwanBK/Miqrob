@@ -227,7 +227,7 @@ echo ""
 read -p "- Last Step before making deb file check your hack .. " "enter";
 echo ""
 echo -n "Making deb file .."
-dpkg-deb -b -Zlzma "/var/root/hacks/$pName" "/var/root/hacks/debs" &>/dev/null
+dpkg-deb -b -Zgzip "/var/root/hacks/$pName" "/var/root/hacks/debs" &>/dev/null
 if [ -f /var/root/hacks/debs/com.kurdios.$pName*_*$Work_Version*_iphoneos-arm.deb ]; then
 echo "DONE!"
 else 
