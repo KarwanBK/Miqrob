@@ -1,5 +1,6 @@
 #!/bin/sh
 # MIQROB 1.0 22/7/2018
+# MIQROB 1.0-16 6/8/2018
 # Karwan BK (karwanbk@yahoo.com)
 # REQUIRED (wget, plutil, curl)
 
@@ -78,9 +79,7 @@ mkdir -p "$pName"
 mkdir -p "$pName"/DEBIAN
 mkdir -p "$pName"/var/mobile/Library/kurd-patcher
 
-if [ "$online" == "online" ]; then
-cd "$pName/var/mobile/Library/kurd-patcher/" && wget "$image" --no-check-certificate &>/dev/null && mv "100x100bb.jpg" $pName.png
-fi
+
 echo -n "Making info File .." && sleep 1
 file="$pName.plist"
 if [ ! -f "$file" ]; then
@@ -96,6 +95,15 @@ if [ "$Work_Version" == "ALL" ];then
 Work_Version="1.0"
 fi
 echo " Done !"
+
+if [ "$online" == "yes" ]; then
+echo -n "Getting app image .." && sleep 1
+cd "$pName/var/mobile/Library/kurd-patcher/" && wget "$image" --no-check-certificate &>/dev/null
+    if [ -f "100x100bb.jpg" ]; then
+    mv "100x100bb.jpg" $pName.png
+	echo " Done !"
+	fi
+fi
 }
 
   # where does your hack go
