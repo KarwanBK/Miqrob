@@ -9,9 +9,9 @@ Turn your iOS SaveGame into a DEB file.
 
 2- install "Kurd Patcher" and "curl" from Cydia.
 
-Put your hack files to /var/root/hacks/hack
+Put your hack files to "/var/root/hacks/hack"
 
-3- run this Script "Miqrob"
+3- run this Script in Terminal after root access "su, alpine", "Miqrob"
 
 # Usage: #
   miqrob <id>
@@ -23,11 +23,12 @@ Put your hack files to /var/root/hacks/hack
   
   miqrob
   
-	You should manually add information :(  just miqrob without <id>
+	You should manually add information :(  just "miqrob", without <id>
 	
-# Sample
-https://itunes.apple.com/app/id553834731 using this app as example :) id : 553834731
-sh miqrob.sh 553834731
+# Example
+https://itunes.apple.com/app/id553834731 using this app as example :) "id : 553834731"
+so run the script like that
+sh "miqrob.sh" "553834731"
 
 # OutPut
 after running the script finally it will give you Debian file .deb you can use it 
@@ -37,9 +38,9 @@ after running the script finally it will give you Debian file .deb you can use i
 # Support
 All Device's running iOS (iPad, iPhone, iPod)
 
-All iOS versions ( iOS 5 - iOS 11.4)
+All iOS versions ( iOS 5 - iOS 12)
 
 # TESTED ON
-iPad, iPhone ( iOS 6,7,8,9,11)
+iPad, iPhone ( iOS 6,7,8,9,11,12)
 
 
