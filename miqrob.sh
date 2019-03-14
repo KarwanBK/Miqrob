@@ -1,6 +1,7 @@
 #!/bin/sh
 # MIQROB 1.0 22/7/2018
-# MIQROB 1.0-16 6/8/2018
+# MIQROB 1.0-16 06/08/2018
+# MIQROB 1.0-17 14/03/2019
 # Karwan BK (karwanbk@yahoo.com)
 # REQUIRED (wget, plutil, curl)
 
@@ -81,7 +82,7 @@ mkdir -p "$pName"/var/mobile/Library/kurd-patcher
 
 
 echo -n "Making info File .." && sleep 1
-file="$pName.plist"
+file="$pName"/var/mobile/Library/kurd-patcher/"$pName.plist"
 if [ ! -f "$file" ]; then
 plutil -create "$file" 2>&1> /dev/null
 plutil -key "BundleID" -string $BundleID "$file" 2>&1> /dev/null
@@ -97,7 +98,7 @@ fi
 echo " Done !"
 
 if [ "$online" == "yes" ]; then
-echo -n "Getting app image .." && sleep 1
+echo -n "Getting app icon .." && sleep 1
 cd "$pName/var/mobile/Library/kurd-patcher/" && wget "$image" --no-check-certificate &>/dev/null
     if [ -f "100x100bb.jpg" ]; then
     mv "100x100bb.jpg" $pName.png
@@ -120,11 +121,16 @@ echo "4> .APP folder"
 echo "5> Documents & Library Together"
 echo ""
 
-if [ -f /var/root/hacks/hack/*.plist ]; then
+if [ -f "/var/root/hacks/hack/"*.plist ]; then
 Type="LP"
 echo "- Enter Hack Type $Type"
 else
-read -p "- HackType (1,2,3,4,5) " "Type";
+    if [ -e "/var/root/hacks/hack/Documents" ]; then
+    Type="D/L"
+    echo "- Enter Hack Type $Type"
+	else
+	read -p "- HackType (1,2,3,4,5) " "Type";
+	fi
 fi
 
 if [ -z "$BundleID" ]; then
